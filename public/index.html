@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scorched Earth — Comeback Generator</title>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a1a;
+      --surface2: #252525;
+      --border: #333;
+      --accent: #ff4500;
+      --accent2: #ff6b35;
+      --text: #f0f0f0;
+      --muted: #888;
+      --success: #ff4500;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .flame-icon {
+      font-size: 56px;
+      line-height: 1;
+      margin-bottom: 12px;
+      display: block;
+      animation: flicker 2s ease-in-out infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { transform: scale(1) rotate(-1deg); filter: brightness(1); }
+      25% { transform: scale(1.05) rotate(1deg); filter: brightness(1.2); }
+      50% { transform: scale(0.98) rotate(-0.5deg); filter: brightness(0.9); }
+      75% { transform: scale(1.03) rotate(0.5deg); filter: brightness(1.1); }
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ff4500, #ff6b35, #ffaa00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 680px;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1rem;
+      padding: 14px 16px;
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .controls {
+      display: grid;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .tone-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
+    .tone-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 10px 12px;
+      text-align: center;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .tone-btn:hover {
+      border-color: var(--accent2);
+      color: var(--text);
+    }
+
+    .tone-btn.active {
+      background: rgba(255, 69, 0, 0.15);
+      border-color: var(--accent);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .slider-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .slider-value {
+      font-size: 0.85rem;
+      color: var(--accent2);
+      font-weight: 700;
+      min-width: 100px;
+      text-align: right;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--surface2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+      transition: box-shadow 0.15s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 14px rgba(255, 69, 0, 0.8);
+    }
+
+    .slider-track {
+      position: relative;
+    }
+
+    .pip-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .pip-labels span {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .generate-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #ff4500, #cc3700);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 16px;
+      margin-top: 28px;
+      transition: all 0.2s;
+      font-family: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .generate-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #ff5500, #dd4400);
+      box-shadow: 0 4px 24px rgba(255, 69, 0, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .generate-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 680px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .result-card.visible {
+      display: block;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .result-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent2);
+    }
+
+    .copy-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .copy-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .copy-btn.copied {
+      border-color: #44cc44;
+      color: #44cc44;
+    }
+
+    .comeback-text {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      font-style: italic;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+    }
+
+    .error-text {
+      color: #ff6666;
+      font-size: 0.9rem;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="flame-icon">🔥</span>
+    <h1>Scorched Earth</h1>
+    <p class="tagline">The perfect comeback, every time. They had it coming.</p>
+  </header>
+
+  <div class="card">
+    <div class="section-label">What did they say?</div>
+    <textarea id="comment" placeholder="Paste the comment or message you received here..." maxlength="1000"></textarea>
+
+    <div class="controls">
+      <div>
+        <div class="section-label">Tone</div>
+        <div class="tone-grid" id="toneGrid">
+          <button class="tone-btn active" data-tone="witty">🧠 Witty</button>
+          <button class="tone-btn" data-tone="sarcastic">🙄 Sarcastic</button>
+          <button class="tone-btn" data-tone="savage">🔪 Savage</button>
+          <button class="tone-btn" data-tone="deadpan">😐 Deadpan</button>
+          <button class="tone-btn" data-tone="shakespearean">🎭 Shakespearean</button>
+          <button class="tone-btn" data-tone="valley-girl">💅 Valley Girl</button>
+          <button class="tone-btn" data-tone="southern">🌸 Southern Charm</button>
+          <button class="tone-btn" data-tone="corporate">📊 Corporate Speak</button>
+        </div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name">💥 Intensity</span>
+            <span class="slider-value" id="intensityLabel">3 — Solid Hit</span>
+          </div>
+          <div class="slider-track">
+            <input type="range" id="intensity" min="1" max="5" value="3" />
+            <div class="pip-labels">
+              <span>Mild</span><span>Medium</span><span>Nuclear</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name">🤬 Vulgarity</span>
+            <span class="slider-value" id="vulgarityLabel">1 — Squeaky Clean</span>
+          </div>
+          <div class="slider-track">
+            <input type="range" id="vulgarity" min="1" max="5" value="1" />
+            <div class="pip-labels">
+              <span>Clean</span><span>Moderate</span><span>Unfiltered</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="generate-btn" id="generateBtn">
+      🔥 Generate Comeback
+    </button>
+    <div class="error-text" id="errorText"></div>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <span class="result-label">Your Comeback</span>
+      <button class="copy-btn" id="copyBtn">Copy</button>
+    </div>
+    <p class="comeback-text" id="comebackText"></p>
+  </div>
+
+  <script>
+    const INTENSITY_LABELS = {
+      1: "1 — Barely a Flick",
+      2: "2 — Light Jab",
+      3: "3 — Solid Hit",
+      4: "4 — Devastating Blow",
+      5: "5 — Nuclear",
+    };
+
+    const VULGARITY_LABELS = {
+      1: "1 — Squeaky Clean",
+      2: "2 — Mild",
+      3: "3 — Moderate",
+      4: "4 — Strong",
+      5: "5 — Absolutely Unfiltered",
+    };
+
+    let selectedTone = "witty";
+
+    document.getElementById("toneGrid").addEventListener("click", (e) => {
+      const btn = e.target.closest(".tone-btn");
+      if (!btn) return;
+      document.querySelectorAll(".tone-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedTone = btn.dataset.tone;
+    });
+
+    document.getElementById("intensity").addEventListener("input", (e) => {
+      document.getElementById("intensityLabel").textContent = INTENSITY_LABELS[e.target.value];
+    });
+
+    document.getElementById("vulgarity").addEventListener("input", (e) => {
+      document.getElementById("vulgarityLabel").textContent = VULGARITY_LABELS[e.target.value];
+    });
+
+    document.getElementById("generateBtn").addEventListener("click", async () => {
+      const comment = document.getElementById("comment").value.trim();
+      const intensity = document.getElementById("intensity").value;
+      const vulgarity = document.getElementById("vulgarity").value;
+      const btn = document.getElementById("generateBtn");
+      const errorEl = document.getElementById("errorText");
+      const resultCard = document.getElementById("resultCard");
+
+      errorEl.style.display = "none";
+
+      if (!comment) {
+        errorEl.textContent = "Please enter the comment you received.";
+        errorEl.style.display = "block";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Loading your arsenal...';
+
+      try {
+        const res = await fetch("/api/comeback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comment, tone: selectedTone, intensity, vulgarity }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+
+        document.getElementById("comebackText").textContent = data.comeback;
+        resultCard.classList.add("visible");
+        resultCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        document.getElementById("copyBtn").textContent = "Copy";
+        document.getElementById("copyBtn").classList.remove("copied");
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = "block";
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = "🔥 Generate Comeback";
+      }
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", () => {
+      const text = document.getElementById("comebackText").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById("copyBtn");
+        btn.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.textContent = "Copy";
+          btn.classList.remove("copied");
+        }, 2000);
+      });
+    });
+
+    document.getElementById("comment").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        document.getElementById("generateBtn").click();
+      }
+    });
+  </script>
+</body>
+</html>

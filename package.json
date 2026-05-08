@@ -1,0 +1,15 @@
+{
+  "name": "scorched-earth",
+  "version": "1.0.0",
+  "description": "The ultimate comeback generator",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5"
+  }
+}
