@@ -29,93 +29,6 @@
       padding: 40px 20px 80px;
     }
 
-    /* ── API key banner ── */
-    #apiKeyBanner {
-      width: 100%;
-      max-width: 680px;
-      background: rgba(255, 69, 0, 0.08);
-      border: 1px solid rgba(255, 69, 0, 0.3);
-      border-radius: 12px;
-      padding: 18px 20px;
-      margin-bottom: 24px;
-      display: none;
-    }
-
-    #apiKeyBanner.visible { display: block; animation: slideUp 0.3s ease-out; }
-
-    .banner-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--accent2);
-      margin-bottom: 10px;
-    }
-
-    .api-key-row {
-      display: flex;
-      gap: 8px;
-    }
-
-    .api-key-row input {
-      flex: 1;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 0.9rem;
-      padding: 10px 14px;
-      outline: none;
-      font-family: monospace;
-      transition: border-color 0.2s;
-    }
-
-    .api-key-row input:focus { border-color: var(--accent); }
-
-    .api-key-save {
-      background: var(--accent);
-      border: none;
-      border-radius: 8px;
-      color: white;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 700;
-      padding: 10px 18px;
-      transition: background 0.15s;
-      font-family: inherit;
-      white-space: nowrap;
-    }
-
-    .api-key-save:hover { background: var(--accent2); }
-
-    .api-key-hint {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-top: 8px;
-    }
-
-    /* ── Settings link ── */
-    #settingsBar {
-      width: 100%;
-      max-width: 680px;
-      text-align: right;
-      margin-bottom: 12px;
-    }
-
-    #settingsLink {
-      background: none;
-      border: none;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-family: inherit;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-
-    #settingsLink:hover { color: var(--text); }
-
-    /* ── Header ── */
     header {
       text-align: center;
       margin-bottom: 40px;
@@ -152,7 +65,6 @@
       margin-top: 8px;
     }
 
-    /* ── Main card ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -194,7 +106,6 @@
       margin-top: 24px;
     }
 
-    /* ── Tone grid ── */
     .tone-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -223,10 +134,8 @@
       font-weight: 600;
     }
 
-    /* ── Sliders ── */
     .slider-group { display: flex; flex-direction: column; gap: 18px; }
-
-    .slider-row { display: flex; flex-direction: column; gap: 8px; }
+    .slider-row   { display: flex; flex-direction: column; gap: 8px; }
 
     .slider-header {
       display: flex;
@@ -277,7 +186,6 @@
 
     .pip-labels span { font-size: 0.7rem; color: var(--muted); }
 
-    /* ── Generate button ── */
     .generate-btn {
       width: 100%;
       background: linear-gradient(135deg, #ff4500, #cc3700);
@@ -301,7 +209,6 @@
     }
 
     .generate-btn:active:not(:disabled) { transform: translateY(0); }
-
     .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
     .error-text {
@@ -311,7 +218,6 @@
       display: none;
     }
 
-    /* ── Result card ── */
     .result-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -360,7 +266,7 @@
       font-family: inherit;
     }
 
-    .copy-btn:hover { border-color: var(--accent); color: var(--text); }
+    .copy-btn:hover  { border-color: var(--accent); color: var(--text); }
     .copy-btn.copied { border-color: #44cc44; color: #44cc44; }
 
     .comeback-text {
@@ -372,7 +278,6 @@
       padding-left: 16px;
     }
 
-    /* ── Spinner ── */
     .spinner {
       display: inline-block;
       width: 18px;
@@ -389,21 +294,6 @@
   </style>
 </head>
 <body>
-
-  <!-- API key setup banner -->
-  <div id="apiKeyBanner">
-    <div class="banner-label">🔑 Anthropic API Key Required</div>
-    <div class="api-key-row">
-      <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off" spellcheck="false" />
-      <button class="api-key-save" id="apiKeySave">Save Key</button>
-    </div>
-    <p class="api-key-hint">Stored in your browser's localStorage — never sent anywhere except directly to Anthropic.</p>
-  </div>
-
-  <!-- Settings link (shown when key is already saved) -->
-  <div id="settingsBar" style="display:none">
-    <button id="settingsLink">⚙ Change API key</button>
-  </div>
 
   <header>
     <span class="flame-icon">🔥</span>
@@ -488,53 +378,6 @@
       5: "5 — Absolutely Unfiltered",
     };
 
-    const TONE_DESCRIPTIONS = {
-      witty:         "clever and quick-witted, using wordplay and intelligence",
-      sarcastic:     "dripping with sarcasm and irony",
-      savage:        "brutally direct and cutting, no mercy",
-      deadpan:       "completely dry and emotionless, matter-of-fact",
-      shakespearean: "in flowery Shakespearean English with thees and thous",
-      "valley-girl": "using valley girl slang, like totally dismissive",
-      southern:      "with Southern charm that barely conceals the venom",
-      corporate:     "using passive-aggressive corporate speak and buzzwords",
-    };
-
-    // ── API key management ──────────────────────────────────────────────────
-
-    const banner     = document.getElementById("apiKeyBanner");
-    const settingsBar = document.getElementById("settingsBar");
-    const apiKeyInput = document.getElementById("apiKeyInput");
-
-    function getApiKey() { return localStorage.getItem("anthropic_api_key") || ""; }
-    function setApiKey(k) { localStorage.setItem("anthropic_api_key", k.trim()); }
-
-    function refreshKeyUI() {
-      const hasKey = !!getApiKey();
-      banner.classList.toggle("visible", !hasKey);
-      settingsBar.style.display = hasKey ? "block" : "none";
-    }
-
-    document.getElementById("apiKeySave").addEventListener("click", () => {
-      const val = apiKeyInput.value.trim();
-      if (!val.startsWith("sk-")) {
-        apiKeyInput.style.borderColor = "#ff6666";
-        return;
-      }
-      setApiKey(val);
-      apiKeyInput.value = "";
-      apiKeyInput.style.borderColor = "";
-      refreshKeyUI();
-    });
-
-    document.getElementById("settingsLink").addEventListener("click", () => {
-      localStorage.removeItem("anthropic_api_key");
-      refreshKeyUI();
-    });
-
-    refreshKeyUI();
-
-    // ── Tone buttons ────────────────────────────────────────────────────────
-
     let selectedTone = "witty";
 
     document.getElementById("toneGrid").addEventListener("click", (e) => {
@@ -545,8 +388,6 @@
       selectedTone = btn.dataset.tone;
     });
 
-    // ── Sliders ─────────────────────────────────────────────────────────────
-
     document.getElementById("intensity").addEventListener("input", (e) => {
       document.getElementById("intensityLabel").textContent = INTENSITY_LABELS[e.target.value];
     });
@@ -555,54 +396,15 @@
       document.getElementById("vulgarityLabel").textContent = VULGARITY_LABELS[e.target.value];
     });
 
-    // ── Prompt builder ───────────────────────────────────────────────────────
-
-    function buildPrompt(comment, tone, intensity, vulgarity) {
-      const toneDesc     = TONE_DESCRIPTIONS[tone] || "witty";
-      const intensityDesc = ["barely a flick", "a light jab", "a solid hit", "a devastating blow", "an absolute nuclear annihilation"][intensity - 1];
-      const vulgarityDesc = vulgarity <= 1
-        ? "completely clean, no profanity"
-        : vulgarity === 2 ? "mild — one or two soft words at most"
-        : vulgarity === 3 ? "moderate profanity is fine"
-        : vulgarity === 4 ? "strong profanity encouraged"
-        : "absolutely no filter, explicit language fully unleashed";
-
-      return `You are the world's greatest comeback artist. Generate a single perfect comeback response to the following comment.
-
-The comment received: "${comment}"
-
-Requirements:
-- Tone: ${toneDesc}
-- Intensity: ${intensityDesc} (intensity level ${intensity}/5)
-- Language/Vulgarity: ${vulgarityDesc} (level ${vulgarity}/5)
-
-Rules:
-- Output ONLY the comeback itself — no explanations, no preamble, no quotes around it
-- Make it feel natural and conversational, not like a monologue
-- It should be punchy: 1–3 sentences max
-- The comeback should be specifically targeted at what was said, not generic
-- Make it memorable and satisfying`;
-    }
-
-    // ── Generate ─────────────────────────────────────────────────────────────
-
     document.getElementById("generateBtn").addEventListener("click", async () => {
-      const comment   = document.getElementById("comment").value.trim();
-      const intensity = parseInt(document.getElementById("intensity").value);
-      const vulgarity = parseInt(document.getElementById("vulgarity").value);
-      const btn       = document.getElementById("generateBtn");
-      const errorEl   = document.getElementById("errorText");
+      const comment    = document.getElementById("comment").value.trim();
+      const intensity  = document.getElementById("intensity").value;
+      const vulgarity  = document.getElementById("vulgarity").value;
+      const btn        = document.getElementById("generateBtn");
+      const errorEl    = document.getElementById("errorText");
       const resultCard = document.getElementById("resultCard");
-      const apiKey    = getApiKey();
 
       errorEl.style.display = "none";
-
-      if (!apiKey) {
-        banner.classList.add("visible");
-        settingsBar.style.display = "none";
-        banner.scrollIntoView({ behavior: "smooth" });
-        return;
-      }
 
       if (!comment) {
         errorEl.textContent = "Please enter the comment you received.";
@@ -614,31 +416,17 @@ Rules:
       btn.innerHTML = '<span class="spinner"></span>Loading your arsenal...';
 
       try {
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
+        const res = await fetch("/api/comeback", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": apiKey,
-            "anthropic-version": "2023-06-01",
-            "anthropic-dangerous-direct-browser-access": "true",
-          },
-          body: JSON.stringify({
-            model: "claude-sonnet-4-6",
-            max_tokens: 300,
-            messages: [{ role: "user", content: buildPrompt(comment, selectedTone, intensity, vulgarity) }],
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comment, tone: selectedTone, intensity, vulgarity }),
         });
 
-        if (res.status === 401) throw new Error("Invalid API key. Click 'Change API key' above to update it.");
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err?.error?.message || `API error ${res.status}`);
-        }
+        const data = await res.json();
 
-        const data    = await res.json();
-        const comeback = data.content[0].text.trim();
+        if (!res.ok) throw new Error(data.error || `Error ${res.status}`);
 
-        document.getElementById("comebackText").textContent = comeback;
+        document.getElementById("comebackText").textContent = data.comeback;
         resultCard.classList.add("visible");
         resultCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
         document.getElementById("copyBtn").textContent = "Copy";
@@ -652,8 +440,6 @@ Rules:
       }
     });
 
-    // ── Copy ─────────────────────────────────────────────────────────────────
-
     document.getElementById("copyBtn").addEventListener("click", () => {
       const text = document.getElementById("comebackText").textContent;
       navigator.clipboard.writeText(text).then(() => {
@@ -663,8 +449,6 @@ Rules:
         setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 2000);
       });
     });
-
-    // ── Ctrl+Enter shortcut ──────────────────────────────────────────────────
 
     document.getElementById("comment").addEventListener("keydown", (e) => {
       if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) document.getElementById("generateBtn").click();
