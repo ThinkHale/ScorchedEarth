@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scorched Earth — Comeback Generator</title>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a1a;
+      --surface2: #252525;
+      --border: #333;
+      --accent: #ff4500;
+      --accent2: #ff6b35;
+      --text: #f0f0f0;
+      --muted: #888;
+      --gold: #ffd700;
+      --gold-dim: rgba(255, 215, 0, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .flame-icon {
+      font-size: 56px;
+      line-height: 1;
+      margin-bottom: 12px;
+      display: block;
+      animation: flicker 2s ease-in-out infinite;
+    }
+
+    @keyframes flicker {
+      0%, 100% { transform: scale(1) rotate(-1deg); filter: brightness(1); }
+      25% { transform: scale(1.05) rotate(1deg); filter: brightness(1.2); }
+      50% { transform: scale(0.98) rotate(-0.5deg); filter: brightness(0.9); }
+      75% { transform: scale(1.03) rotate(0.5deg); filter: brightness(1.1); }
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ff4500, #ff6b35, #ffaa00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 680px;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 1rem;
+      padding: 14px 16px;
+      resize: vertical;
+      min-height: 100px;
+      outline: none;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+
+    textarea:focus { border-color: var(--accent); }
+
+    .controls {
+      display: grid;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    /* ── Tone grid ── */
+    .tone-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
+    .tone-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 10px 12px;
+      text-align: center;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .tone-btn:hover { border-color: var(--accent2); color: var(--text); }
+
+    .tone-btn.active {
+      background: rgba(255, 69, 0, 0.15);
+      border-color: var(--accent);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── Premium tone styling ── */
+    .premium-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 10px;
+      color: var(--gold);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+
+    .premium-divider::before,
+    .premium-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gold-dim);
+    }
+
+    .tone-btn--premium {
+      border-color: var(--gold-dim);
+      position: relative;
+      opacity: 0.8;
+    }
+
+    .tone-btn--premium::after {
+      content: '🔒';
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      font-size: 0.6rem;
+    }
+
+    .tone-btn--premium.unlocked {
+      opacity: 1;
+      border-color: rgba(255, 215, 0, 0.35);
+    }
+
+    .tone-btn--premium.unlocked::after { display: none; }
+
+    .tone-btn--premium.active {
+      background: rgba(255, 215, 0, 0.1);
+      border-color: var(--gold);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── Sliders ── */
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .slider-row { display: flex; flex-direction: column; gap: 8px; }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .slider-name { font-size: 0.9rem; font-weight: 600; }
+
+    .slider-value {
+      font-size: 0.85rem;
+      color: var(--accent2);
+      font-weight: 700;
+      min-width: 130px;
+      text-align: right;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--surface2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+      transition: box-shadow 0.15s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      box-shadow: 0 0 14px rgba(255, 69, 0, 0.8);
+    }
+
+    .slider-track { position: relative; }
+
+    .pip-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+
+    .pip-labels span { font-size: 0.7rem; color: var(--muted); }
+
+    .pip-premium { color: var(--gold); }
+
+    /* ── Generate button ── */
+    .generate-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #ff4500, #cc3700);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 16px;
+      margin-top: 28px;
+      transition: all 0.2s;
+      font-family: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .generate-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, #ff5500, #dd4400);
+      box-shadow: 0 4px 24px rgba(255, 69, 0, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .generate-btn:active:not(:disabled) { transform: translateY(0); }
+    .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ── Result card ── */
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 680px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .result-card.visible {
+      display: block;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .result-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent2);
+    }
+
+    .copy-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .copy-btn:hover { border-color: var(--accent); color: var(--text); }
+    .copy-btn.copied { border-color: #44cc44; color: #44cc44; }
+
+    .comeback-text {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      font-style: italic;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+      padding-left: 16px;
+    }
+
+    .error-text {
+      color: #ff6666;
+      font-size: 0.9rem;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Paywall modal ── */
+    .paywall-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .paywall-overlay.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .paywall-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      animation: slideUp 0.25s ease-out;
+    }
+
+    .paywall-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: color 0.15s;
+      font-family: inherit;
+    }
+
+    .paywall-close:hover { color: var(--text); }
+
+    .paywall-icon { font-size: 3rem; margin-bottom: 12px; }
+
+    .paywall-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), #ff6b35);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .paywall-subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    .paywall-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .paywall-features li {
+      font-size: 0.88rem;
+      color: var(--text);
+      display: flex;
+      gap: 8px;
+    }
+
+    .paywall-features li::before {
+      content: '✦';
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .unlock-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--gold), #ff8c00);
+      border: none;
+      border-radius: 10px;
+      color: #111;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 800;
+      padding: 14px;
+      margin-bottom: 10px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .unlock-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .unlock-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .restore-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 4px;
+      text-decoration: underline;
+      font-family: inherit;
+      transition: color 0.15s;
+    }
+
+    .restore-btn:hover { color: var(--text); }
+    .restore-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="flame-icon">🔥</span>
+    <h1>Scorched Earth</h1>
+    <p class="tagline">The perfect comeback, every time. They had it coming.</p>
+  </header>
+
+  <div class="card">
+    <div class="section-label">What did they say?</div>
+    <textarea id="comment" placeholder="Paste the comment or message you received here..." maxlength="1000"></textarea>
+
+    <div class="controls">
+      <div>
+        <div class="section-label">Tone</div>
+
+        <div id="toneSection">
+          <div class="tone-grid" id="toneGrid">
+            <button class="tone-btn active" data-tone="witty">🧠 Witty</button>
+            <button class="tone-btn" data-tone="sarcastic">🙄 Sarcastic</button>
+            <button class="tone-btn" data-tone="savage">🔪 Savage</button>
+            <button class="tone-btn" data-tone="deadpan">😐 Deadpan</button>
+            <button class="tone-btn" data-tone="valley-girl">💅 Valley Girl</button>
+            <button class="tone-btn" data-tone="corporate">📊 Corporate Speak</button>
+          </div>
+
+          <div class="premium-divider">✨ Premium Tones</div>
+
+          <div class="tone-grid" id="premiumToneGrid">
+            <button class="tone-btn tone-btn--premium" data-tone="shakespearean" data-premium>🎭 Shakespearean</button>
+            <button class="tone-btn tone-btn--premium" data-tone="southern" data-premium>🌸 Southern Charm</button>
+            <button class="tone-btn tone-btn--premium" data-tone="brimstone" data-premium>⛪ Brimstone</button>
+            <button class="tone-btn tone-btn--premium" data-tone="therapist" data-premium>🛋️ Therapist</button>
+            <button class="tone-btn tone-btn--premium" data-tone="chef" data-premium>👨‍🍳 Chef's Special</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="slider-group">
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name">💥 Intensity</span>
+            <span class="slider-value" id="intensityLabel">3 — Solid Hit</span>
+          </div>
+          <div class="slider-track">
+            <input type="range" id="intensity" min="1" max="5" value="3" />
+            <div class="pip-labels">
+              <span>Mild</span>
+              <span>Medium</span>
+              <span>Nuclear <span class="pip-premium">✨</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name">🤬 Vulgarity</span>
+            <span class="slider-value" id="vulgarityLabel">1 — Squeaky Clean</span>
+          </div>
+          <div class="slider-track">
+            <input type="range" id="vulgarity" min="1" max="5" value="1" />
+            <div class="pip-labels">
+              <span>Clean</span>
+              <span>Moderate</span>
+              <span>Unfiltered <span class="pip-premium">✨</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="generate-btn" id="generateBtn">🔥 Generate Comeback</button>
+    <div class="error-text" id="errorText"></div>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <span class="result-label">Your Comeback</span>
+      <button class="copy-btn" id="copyBtn">Copy</button>
+    </div>
+    <p class="comeback-text" id="comebackText"></p>
+  </div>
+
+  <!-- Paywall modal -->
+  <div class="paywall-overlay" id="paywallOverlay">
+    <div class="paywall-modal">
+      <button class="paywall-close" id="paywallClose">✕</button>
+      <div class="paywall-icon">🔥</div>
+      <h2 class="paywall-title">Unlock Premium</h2>
+      <p class="paywall-subtitle">Go further with the full arsenal</p>
+      <ul class="paywall-features">
+        <li>5 exclusive tones — Shakespearean, Southern Charm, Brimstone, Therapist, Chef's Special</li>
+        <li>Nuclear intensity (level 5)</li>
+        <li>Absolutely Unfiltered vulgarity (level 5)</li>
+      </ul>
+      <button class="unlock-btn" id="unlockBtn">Unlock for $1.99</button>
+      <button class="restore-btn" id="restoreBtn">Restore Purchases</button>
+    </div>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "appId": "com.thinkhale.scorchedearth",
+  "appName": "Scorched Earth",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}

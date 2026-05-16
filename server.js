@@ -7,17 +7,22 @@ const app = express();
 const client = new Anthropic();
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "dist")));
 
 const TONE_DESCRIPTIONS = {
-  witty: "clever and quick-witted, using wordplay and intelligence",
-  sarcastic: "dripping with sarcasm and irony",
-  savage: "brutally direct and cutting, no mercy",
-  deadpan: "completely dry and emotionless, matter-of-fact",
-  shakespearean: "in flowery Shakespearean English with thees and thous",
+  // Free tones
+  witty:         "clever and quick-witted, using wordplay and intelligence",
+  sarcastic:     "dripping with sarcasm and irony",
+  savage:        "brutally direct and cutting, no mercy",
+  deadpan:       "completely dry and emotionless, matter-of-fact",
   "valley-girl": "using valley girl slang, like totally dismissive",
-  southern: "with Southern charm that barely conceals the venom",
-  corporate: "using passive-aggressive corporate speak and buzzwords",
+  corporate:     "using passive-aggressive corporate speak and buzzwords",
+  // Premium tones
+  shakespearean: "in flowery Shakespearean English with thees and thous",
+  southern:      "with Southern charm that barely conceals the venom — honeyed words with a steel blade underneath",
+  brimstone:     "as a fire-and-brimstone preacher delivering righteous condemnation — biblical fury, Old Testament wrath, and righteous indignation at their sheer audacity",
+  therapist:     "as a passive-aggressive therapist — weaponized empathy, clinical language, and feigned concern that makes the roast land harder than any direct insult ever could",
+  chef:          "with the furious passion of an elite chef who has been served something disgraceful — culinary metaphors, exasperated disbelief, Gordon Ramsay energy",
 };
 
 function buildPrompt(comment, tone, intensity, vulgarity) {
