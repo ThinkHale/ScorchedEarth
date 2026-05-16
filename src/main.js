@@ -7,11 +7,11 @@ import { Capacitor } from '@capacitor/core';
 const DEPLOYED_API_URL = 'https://scorchedearth.pages.dev';
 
 // Get your keys from https://app.revenuecat.com → Project → API Keys
-const RC_IOS_KEY     = 'appl_YOUR_REVENUECAT_IOS_KEY';
+const RC_IOS_KEY     = 'appl_DepsMmvSRDIWsYhpoieEDREHYUQ';
 const RC_ANDROID_KEY = 'goog_YOUR_REVENUECAT_ANDROID_KEY';
 
 // Must match the entitlement identifier in your RevenueCat dashboard
-const ENTITLEMENT_ID = 'premium';
+const ENTITLEMENT_ID = 'Scorched Earth Premium';
 
 // ─── Runtime state ─────────────────────────────────────────────────────────
 let isPremium  = false;
