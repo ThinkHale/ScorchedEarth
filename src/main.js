@@ -1,4 +1,4 @@
-import { Purchases } from '@revenuecat/purchases-capacitor';
+import { Purchases, PURCHASES_ERROR_CODE } from '@revenuecat/purchases-capacitor';
 import { Capacitor } from '@capacitor/core';
 
 // ─── Config ────────────────────────────────────────────────────────────────
@@ -120,8 +120,7 @@ async function purchasePremium() {
 
     if (isPremium) hidePaywall();
   } catch (e) {
-    // PURCHASE_CANCELLED is a normal user action, not an error
-    if (!e.userCancelled) {
+    if (e.code !== PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) {
       alert('Purchase failed: ' + (e.message || 'Please try again.'));
     }
     unlockBtn.disabled    = false;
