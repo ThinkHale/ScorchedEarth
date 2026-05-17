@@ -25,6 +25,12 @@ echo "==> Installing Node.js dependencies"
 cd "$REPO_ROOT"
 npm install
 
+echo "==> Building web app"
+npm run build
+
+echo "==> Copying web assets to iOS project"
+npx cap copy ios
+
 echo "==> Installing CocoaPods dependencies"
 cd "$REPO_ROOT/ios/App"
 pod install
