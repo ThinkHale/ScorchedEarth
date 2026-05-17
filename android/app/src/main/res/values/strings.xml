@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Scorched Earth</string>
+    <string name="title_activity_main">Scorched Earth</string>
+    <string name="package_name">com.thinkhale.scorchedearth</string>
+    <string name="custom_url_scheme">com.thinkhale.scorchedearth</string>
+</resources>

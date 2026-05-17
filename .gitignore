@@ -1,5 +1,13 @@
 node_modules/
 .env
 dist/
-ios/
-android/
+
+# iOS — ignore generated build artifacts and downloaded pods, not the project itself
+ios/App/Pods/
+ios/App/.build/
+ios/App/DerivedData/
+
+# Android — ignore build outputs, not the project itself
+android/.gradle/
+android/app/build/
+android/build/
