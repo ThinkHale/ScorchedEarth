@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d0d0d" />
   <title>Scorched Earth — Comeback Generator</title>
   <style>
     :root {
@@ -18,17 +19,23 @@
       --gold-dim: rgba(255, 215, 0, 0.25);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px 80px;
+      padding: 40px 20px max(80px, calc(24px + env(safe-area-inset-bottom)));
+      overscroll-behavior: none;
     }
 
     header {
@@ -74,6 +81,7 @@
       padding: 32px;
       width: 100%;
       max-width: 680px;
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 69, 0, 0.06);
     }
 
     .section-label {
@@ -123,12 +131,19 @@
       cursor: pointer;
       font-size: 0.85rem;
       padding: 10px 12px;
+      min-height: 44px;
       text-align: center;
       transition: all 0.15s;
       font-family: inherit;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
-    .tone-btn:hover { border-color: var(--accent2); color: var(--text); }
+    .tone-btn:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--accent2);
+      color: var(--text);
+    }
 
     .tone-btn.active {
       background: rgba(255, 69, 0, 0.15);
@@ -214,26 +229,55 @@
     input[type="range"] {
       -webkit-appearance: none;
       width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: var(--surface2);
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(
+        to right,
+        var(--accent) 0%,
+        var(--accent) var(--range-progress, 0%),
+        var(--surface2) var(--range-progress, 0%),
+        var(--surface2) 100%
+      );
       outline: none;
       cursor: pointer;
     }
 
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 18px;
-      height: 18px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       background: var(--accent);
       cursor: pointer;
-      box-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
-      transition: box-shadow 0.15s;
+      box-shadow: 0 0 10px rgba(255, 69, 0, 0.55);
+      transition: box-shadow 0.15s, transform 0.1s;
     }
 
     input[type="range"]::-webkit-slider-thumb:hover {
-      box-shadow: 0 0 14px rgba(255, 69, 0, 0.8);
+      box-shadow: 0 0 16px rgba(255, 69, 0, 0.8);
+      transform: scale(1.1);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 10px rgba(255, 69, 0, 0.55);
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--surface2);
+    }
+
+    input[type="range"]::-moz-range-progress {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--accent);
     }
 
     .slider-track { position: relative; }
@@ -286,6 +330,7 @@
       max-width: 680px;
       margin-top: 20px;
       display: none;
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
     }
 
     .result-card.visible {
@@ -379,7 +424,8 @@
 
     .paywall-modal {
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-top: 2px solid var(--gold);
       border-radius: 20px;
       padding: 40px 32px;
       max-width: 360px;
@@ -387,6 +433,7 @@
       text-align: center;
       position: relative;
       animation: slideUp 0.25s ease-out;
+      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.7), 0 0 32px rgba(255, 215, 0, 0.06);
     }
 
     .paywall-close {

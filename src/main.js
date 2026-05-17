@@ -11,7 +11,7 @@ const RC_IOS_KEY     = 'appl_DepsMmvSRDIWsYhpoieEDREHYUQ';
 const RC_ANDROID_KEY = 'goog_YOUR_REVENUECAT_ANDROID_KEY';
 
 // Must match the entitlement identifier in your RevenueCat dashboard
-const ENTITLEMENT_ID = 'Scorched Earth Premium';
+const ENTITLEMENT_ID = 'premium';
 
 // ─── Runtime state ─────────────────────────────────────────────────────────
 let isPremium  = false;
@@ -36,6 +36,12 @@ const VULGARITY_LABELS = {
   4: '4 — Strong',
   5: '5 — Absolutely Unfiltered ✨',
 };
+
+// ─── Slider fill ───────────────────────────────────────────────────────────
+function updateSliderFill(el) {
+  const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
+  el.style.setProperty('--range-progress', `${pct}%`);
+}
 
 // ─── Element refs ──────────────────────────────────────────────────────────
 const intensityEl    = document.getElementById('intensity');
@@ -73,10 +79,12 @@ function hidePaywall() {
     if (parseInt(intensityEl.value) === 5) {
       intensityEl.value = 4;
       intensityLabel.textContent = INTENSITY_LABELS[4];
+      updateSliderFill(intensityEl);
     }
     if (parseInt(vulgarityEl.value) === 5) {
       vulgarityEl.value = 4;
       vulgarityLabel.textContent = VULGARITY_LABELS[4];
+      updateSliderFill(vulgarityEl);
     }
     // If the active tone is a premium one, revert to witty
     const activePremium = document.querySelector('.tone-btn--premium.active');
@@ -169,12 +177,14 @@ document.getElementById('toneSection').addEventListener('click', (e) => {
 intensityEl.addEventListener('input', (e) => {
   const val = parseInt(e.target.value);
   intensityLabel.textContent = INTENSITY_LABELS[val];
+  updateSliderFill(e.target);
   if (val === 5 && !isPremium) showPaywall();
 });
 
 vulgarityEl.addEventListener('input', (e) => {
   const val = parseInt(e.target.value);
   vulgarityLabel.textContent = VULGARITY_LABELS[val];
+  updateSliderFill(e.target);
   if (val === 5 && !isPremium) showPaywall();
 });
 
@@ -259,4 +269,6 @@ document.getElementById('comment').addEventListener('keydown', (e) => {
 });
 
 // ─── Init ──────────────────────────────────────────────────────────────────
+updateSliderFill(intensityEl);
+updateSliderFill(vulgarityEl);
 initRevenueCat();
