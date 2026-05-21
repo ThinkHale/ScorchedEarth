@@ -129,7 +129,7 @@ async function purchasePremium() {
       })) ?? [],
       allOfferings: Object.keys(offerings?.all ?? {}),
     }));
-    const pkg = offerings?.current?.availablePackages?.[0];
+    const pkg = offerings?.current?.availablePackages?.[0] ?? offerings?.current?.lifetime;
     if (!pkg) throw new Error('No packages found. Please try again later.');
 
     const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
