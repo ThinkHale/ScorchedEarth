@@ -101,9 +101,10 @@ async function initRevenueCat() {
   if (!isNative) return;
 
   try {
+    await Purchases.setLogLevel({ level: 'DEBUG' });
     await Purchases.configure({
       apiKey: Capacitor.getPlatform() === 'ios' ? RC_IOS_KEY : RC_ANDROID_KEY,
-      appUserID: null, // anonymous user; RevenueCat manages the ID
+      appUserID: null,
     });
     const { customerInfo } = await Purchases.getCustomerInfo();
     isPremium = ENTITLEMENT_ID in customerInfo.entitlements.active;
