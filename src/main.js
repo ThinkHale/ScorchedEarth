@@ -120,16 +120,12 @@ async function purchasePremium() {
 
   try {
     const { offerings } = await Purchases.getOfferings();
-    console.log('RC offerings:', JSON.stringify({
-      current: offerings?.current?.identifier ?? null,
-      availablePackages: offerings?.current?.availablePackages?.map(p => ({
-        id: p.identifier,
-        productId: p.product?.productIdentifier,
-        price: p.product?.price,
-      })) ?? [],
-      allOfferings: Object.keys(offerings?.all ?? {}),
-    }));
-    const pkg = offerings?.current?.availablePackages?.[0] ?? offerings?.current?.lifetime;
+    const offering =
+      offerings?.current ??
+      offerings?.all?.premium ??
+      offerings?.all?.default ??
+      Object.values(offerings?.all ?? {})[0];
+    const pkg = offering?.availablePackages?.[0] ?? offering?.lifetime;
     if (!pkg) throw new Error('No packages found. Please try again later.');
 
     const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
