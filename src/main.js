@@ -101,7 +101,6 @@ async function initRevenueCat() {
   if (!isNative) return;
 
   try {
-    await Purchases.setLogLevel({ level: 'DEBUG' });
     await Purchases.configure({
       apiKey: Capacitor.getPlatform() === 'ios' ? RC_IOS_KEY : RC_ANDROID_KEY,
       appUserID: null,
@@ -126,10 +125,7 @@ async function purchasePremium() {
       offeringsResult?.all?.default ??
       Object.values(offeringsResult?.all ?? {})[0];
     const pkg = offering?.availablePackages?.[0] ?? offering?.lifetime;
-    if (!pkg) {
-      const diag = `current=${!!offeringsResult?.current} allKeys=${Object.keys(offeringsResult?.all??{}).join(',')} offeringId=${offering?.identifier} pkgCount=${offering?.availablePackages?.length} hasLifetime=${!!offering?.lifetime}`;
-      throw new Error(`No packages found. [${diag}]`);
-    }
+    if (!pkg) throw new Error('No packages found. Please try again later.');
 
     const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
     isPremium = ENTITLEMENT_ID in customerInfo.entitlements.active;
