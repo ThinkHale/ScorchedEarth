@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(identify /Users/Cody.Hale/ThinkHale/ScorchedEarth/ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/Cody.Hale/ThinkHale/ScorchedEarth/ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/Cody.Hale/ThinkHale/ScorchedEarth/SplashScreen.png)",
+      "Bash(sips -z 2732 2732 /Users/Cody.Hale/ThinkHale/ScorchedEarth/SplashScreen.png --out /Users/Cody.Hale/ThinkHale/ScorchedEarth/ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732.png)",
+      "Bash(sips -z 2732 2732 /Users/Cody.Hale/ThinkHale/ScorchedEarth/SplashScreen.png --out /Users/Cody.Hale/ThinkHale/ScorchedEarth/ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732-1.png)",
+      "Bash(sips -z 2732 2732 /Users/Cody.Hale/ThinkHale/ScorchedEarth/SplashScreen.png --out /Users/Cody.Hale/ThinkHale/ScorchedEarth/ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732-2.png)",
+      "Bash(sips -z 480 320 /Users/Cody.Hale/ThinkHale/ScorchedEarth/SplashScreen.png --out /Users/Cody.Hale/ThinkHale/ScorchedEarth/android/app/src/main/res/drawable-port-mdpi/splash.png)",
+      "Bash(sips -z 800 480 /Users/Cody.Hale/ThinkHale/ScorchedEarth/SplashScreen.png --out /Users/Cody.Hale/ThinkHale/ScorchedEarth/android/app/src/main/res/drawable-port-hdpi/splash.png)"
+    ]
+  }
+}
