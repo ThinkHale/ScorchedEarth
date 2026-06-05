@@ -8,7 +8,7 @@ const DEPLOYED_API_URL = 'https://scorchedearth.pages.dev';
 
 // Get your keys from https://app.revenuecat.com → Project → API Keys
 const RC_IOS_KEY     = 'appl_DepsMmvSRDIWsYhpoieEDREHYUQ';
-const RC_ANDROID_KEY = 'goog_YOUR_REVENUECAT_ANDROID_KEY';
+const RC_ANDROID_KEY = 'goog_mhBuJqMHrYqAEsRhtkKIloEkdHt';
 
 // Must match the entitlement identifier in your RevenueCat dashboard
 const ENTITLEMENT_ID = 'premium';
