@@ -515,7 +515,8 @@
 
     .unlock-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    .restore-btn {
+    .restore-btn,
+    .offer-code-btn {
       background: none;
       border: none;
       color: var(--muted);
@@ -527,8 +528,16 @@
       transition: color 0.15s;
     }
 
-    .restore-btn:hover { color: var(--text); }
+    .restore-btn:hover,
+    .offer-code-btn:hover { color: var(--text); }
     .restore-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .paywall-secondary-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
   </style>
 </head>
 <body>
@@ -627,7 +636,10 @@
         <li>Absolutely Unfiltered vulgarity (level 5)</li>
       </ul>
       <button class="unlock-btn" id="unlockBtn">Unlock for $1.99</button>
-      <button class="restore-btn" id="restoreBtn">Restore Purchases</button>
+      <div class="paywall-secondary-actions">
+        <button class="offer-code-btn" id="offerCodeBtn">Enter Offer Code</button>
+        <button class="restore-btn" id="restoreBtn">Restore Purchases</button>
+      </div>
     </div>
   </div>
 

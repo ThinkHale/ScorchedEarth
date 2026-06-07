@@ -51,6 +51,7 @@ const vulgarityLabel = document.getElementById('vulgarityLabel');
 const paywallOverlay = document.getElementById('paywallOverlay');
 const unlockBtn      = document.getElementById('unlockBtn');
 const restoreBtn     = document.getElementById('restoreBtn');
+const offerCodeBtn   = document.getElementById('offerCodeBtn');
 
 // ─── Premium UI ────────────────────────────────────────────────────────────
 function updatePremiumUI() {
@@ -64,11 +65,13 @@ function showPaywall() {
   if (!isNative) {
     unlockBtn.textContent = 'Available on iOS & Android';
     unlockBtn.disabled    = true;
-    restoreBtn.style.display = 'none';
+    restoreBtn.style.display      = 'none';
+    offerCodeBtn.style.display    = 'none';
   } else {
     unlockBtn.textContent = 'Unlock for $1.99';
     unlockBtn.disabled    = false;
-    restoreBtn.style.display = '';
+    restoreBtn.style.display      = '';
+    offerCodeBtn.style.display    = '';
   }
 }
 
@@ -108,8 +111,36 @@ async function initRevenueCat() {
     const { customerInfo } = await Purchases.getCustomerInfo();
     isPremium = ENTITLEMENT_ID in customerInfo.entitlements.active;
     updatePremiumUI();
+
+    // Handles async purchase completion (e.g. iOS offer code redemption)
+    Purchases.addCustomerInfoUpdateListener((info) => {
+      const justUnlocked = !isPremium && (ENTITLEMENT_ID in info.entitlements.active);
+      isPremium = ENTITLEMENT_ID in info.entitlements.active;
+      updatePremiumUI();
+      if (justUnlocked && paywallOverlay.classList.contains('open')) hidePaywall();
+    });
   } catch (e) {
     console.error('RevenueCat init error:', e);
+  }
+}
+
+async function redeemOfferCode() {
+  if (Capacitor.getPlatform() === 'ios') {
+    try {
+      await Purchases.presentCodeRedemptionSheet();
+      // Sheet has been presented; customer info listener handles the unlock.
+      // Also do an immediate check in case it resolved after redemption.
+      const { customerInfo } = await Purchases.getCustomerInfo();
+      isPremium = ENTITLEMENT_ID in customerInfo.entitlements.active;
+      updatePremiumUI();
+      if (isPremium) hidePaywall();
+    } catch (e) {
+      console.error('Code redemption error:', e);
+    }
+  } else {
+    // Google Play promo codes are redeemed through the Play Store.
+    window.open('https://play.google.com/redeem', '_system');
+    alert('Enter your promo code in the Play Store, then return here and tap "Restore Purchases" to unlock premium.');
   }
 }
 
@@ -202,6 +233,7 @@ paywallOverlay.addEventListener('click', (e) => {
 
 unlockBtn.addEventListener('click', purchasePremium);
 restoreBtn.addEventListener('click', restorePurchases);
+offerCodeBtn.addEventListener('click', redeemOfferCode);
 
 // ─── Generate ──────────────────────────────────────────────────────────────
 document.getElementById('generateBtn').addEventListener('click', async () => {
