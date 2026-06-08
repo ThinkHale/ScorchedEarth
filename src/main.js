@@ -1,4 +1,4 @@
-import { Purchases, PURCHASES_ERROR_CODE } from '@revenuecat/purchases-capacitor';
+import { Purchases, PURCHASES_ERROR_CODE, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 import { Capacitor } from '@capacitor/core';
 
 // ─── Config ────────────────────────────────────────────────────────────────
@@ -104,6 +104,9 @@ async function initRevenueCat() {
   if (!isNative) return;
 
   try {
+    // Verbose logging surfaces the underlying Google Play / StoreKit error in
+    // logcat / Xcode console — essential for diagnosing ConfigurationError.
+    await Purchases.setLogLevel({ level: LOG_LEVEL.VERBOSE });
     await Purchases.configure({
       apiKey: Capacitor.getPlatform() === 'ios' ? RC_IOS_KEY : RC_ANDROID_KEY,
       appUserID: null,
@@ -165,7 +168,16 @@ async function purchasePremium() {
     if (isPremium) hidePaywall();
   } catch (e) {
     if (e.code !== PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR) {
-      alert('Purchase failed: ' + (e.message || 'Please try again.'));
+      // The "underlying error" is the actual Google Play / StoreKit cause behind
+      // a ConfigurationError. Log everything and show the details we have.
+      console.error('Purchase error:', {
+        code: e.code,
+        message: e.message,
+        readableErrorCode: e.userInfo?.readableErrorCode ?? e.readableErrorCode,
+        underlyingErrorMessage: e.underlyingErrorMessage,
+      });
+      const detail = e.underlyingErrorMessage || e.message || 'Please try again.';
+      alert('Purchase failed: ' + detail);
     }
     unlockBtn.disabled    = false;
     unlockBtn.textContent = 'Unlock for $1.99';
